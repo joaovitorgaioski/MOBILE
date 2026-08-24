@@ -11,7 +11,7 @@ if (window.cordova === undefined) {
 
 function onDeviceReady() {
     console.log('cordova ready');
-    atualizarContadorSacola();
+    //atualizarContadorSacola();
 }
 
 function atualizarContadorSacola() {
@@ -44,3 +44,5 @@ function salvarSacola(sacola) {
 function formatarPreco(valor) {
     return `R$ ${valor.toFixed(2).replace(".", ",")}`;
 }
+
+atualizarContadorSacola();
