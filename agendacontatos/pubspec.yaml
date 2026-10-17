@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   fluttertoast: ^10.0.2
+  local_auth: ^3.0.2
   path: ^1.9.1
   sqflite: ^2.4.4
 

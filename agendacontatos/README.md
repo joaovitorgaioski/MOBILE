@@ -1,3 +1,4 @@
 # Agenda de Contatos simples com Flutter
 
-sqflite
+- sqflite
+- local_auth
