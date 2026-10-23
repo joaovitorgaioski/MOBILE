@@ -4,6 +4,19 @@ void main() {
   runApp(PlacarTruco());
 }
 
+class Truco extends StatelessWidget {
+  const new({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      darkTheme: ThemeData.dark(),
+      debugShowCheckedModeBanner: false,
+      home: PlacarTruco(),
+    );
+  }
+}
+
 class PlacarTruco extends StatefulWidget {
   const new({super.key});
 
@@ -16,8 +29,47 @@ class _PlacarTrucoState extends State<PlacarTruco> {
   String jogador2 = "Eles";
   int pontos1 = 0;
   int pontos2 = 0;
+  int meta = 12;
 
-  void _editarNome() {}
+  String? get vencedor {
+    if (pontos1 >= meta) return jogador1;
+    if (pontos2 >= meta) return jogador2;
+    return null;
+  }
+
+  Future<void> _editarNome(int jogador) async {
+    final controller = TextEditingController(
+      text: jogador == 1 ? jogador1 : jogador2,
+    );
+
+    final novoNome = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text("Editar Nome"),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          decoration: InputDecoration(hintText: "Nome do Jogador"),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, controller.text),
+            child: Text("Confirmar"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text("Cancelar"),
+          ),
+        ],
+      ),
+    );
+
+    if (novoNome != null && novoNome.trim().isNotEmpty) {
+      setState(() {
+        jogador == 1 ? jogador1 = novoNome : jogador2 = novoNome;
+      });
+    }
+  }
 
   void _reiniciar() {
     setState(() {
@@ -34,35 +86,39 @@ class _PlacarTrucoState extends State<PlacarTruco> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        backgroundColor: Colors.black,
-        appBar: AppBar(
-          title: Text("Placar de Truco"),
-          centerTitle: true,
-          actions: [
-            IconButton(
-              onPressed: _reiniciar,
-              icon: Icon(Icons.refresh),
-              tooltip: "Reiniciar Jogo",
-            ),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          "Placar de Truco",
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        body: Stack(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(15),
-              child: Column(
-                children: [
-                  Expanded(child: _painelJogador(1)),
-                  Divider(height: 20, thickness: 2),
-                  Expanded(child: _painelJogador(2)),
-                ],
-              ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: _reiniciar,
+            icon: Icon(Icons.refresh),
+            tooltip: "Reiniciar Jogo",
+          ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          Padding(
+            padding: EdgeInsets.all(15),
+            child: Column(
+              children: [
+                Expanded(child: _painelJogador(1)),
+                Divider(
+                  height: 20,
+                  thickness: 5,
+                  radius: BorderRadius.circular(20),
+                ),
+                Expanded(child: _painelJogador(2)),
+              ],
             ),
-          ],
-        ),
+          ),
+          if (vencedor != null) _telaVitoria(),
+        ],
       ),
     );
   }
@@ -81,7 +137,7 @@ class _PlacarTrucoState extends State<PlacarTruco> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             InkWell(
-              onTap: () => _editarNome(),
+              onTap: () => _editarNome(num),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 spacing: 20,
@@ -130,6 +186,40 @@ class _PlacarTrucoState extends State<PlacarTruco> {
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _telaVitoria() {
+    return Container(
+      color: Colors.black87,
+      child: Center(
+        child: Card(
+          margin: EdgeInsets.all(25),
+          child: Padding(
+            padding: EdgeInsets.all(25),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 20,
+              children: [
+                Icon(Icons.emoji_events, color: Colors.amber),
+                Text(
+                  "Vencedor!",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  vencedor!,
+                  style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                ),
+                ElevatedButton.icon(
+                  onPressed: _reiniciar,
+                  label: Text("Jogar de novo"),
+                  icon: Icon(Icons.refresh),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );
