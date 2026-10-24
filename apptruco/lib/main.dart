@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(PlacarTruco());
+  runApp(Truco());
 }
 
 class Truco extends StatelessWidget {
