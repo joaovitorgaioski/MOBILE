@@ -1,6 +1,7 @@
 import 'package:app_pokemon/screens/details_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:vibration/vibration.dart';
 
 class ScannerScreen extends StatefulWidget {
   const ScannerScreen({super.key});
@@ -10,7 +11,7 @@ class ScannerScreen extends StatefulWidget {
 }
 
 class _ScannerScreenState extends State<ScannerScreen> {
-  MobileScannerController _scannerController = MobileScannerController();
+  final MobileScannerController _scannerController = MobileScannerController();
   bool _navigating = false;
 
   Future<void> _onDetected(BarcodeCapture capture) async {
@@ -20,6 +21,7 @@ class _ScannerScreenState extends State<ScannerScreen> {
     if (id == null) return;
 
     _navigating = true;
+    Vibration.vibrate(duration: 200);
     await Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => DetailsScreen(id: id)),

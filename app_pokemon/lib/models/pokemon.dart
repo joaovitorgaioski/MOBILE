@@ -5,13 +5,15 @@ class Pokemon {
   final String nome;
   final double altura;
   final String sprite;
+  final DateTime dataCaptura;
 
   Pokemon({
     required this.id,
     required this.nome,
     required this.altura,
     required this.sprite,
-  });
+    DateTime? dataCaptura,
+  }) : dataCaptura = dataCaptura ?? DateTime.now();
 
   factory Pokemon.fromJson(String jsonString) {
     final Map<String, dynamic> data = jsonDecode(jsonString);
